@@ -1,23 +1,17 @@
 package scalerlearningapi.productapi.Controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import scalerlearningapi.productapi.DTO.AddNewProductReqDto;
-import scalerlearningapi.productapi.DTO.ProductRequestDto;
-import scalerlearningapi.productapi.DTO.SingleProductRespDto;
-import scalerlearningapi.productapi.Models.Category;
+import scalerlearningapi.productapi.Clients.fakestore.FakeStoreProductRequestDto;
+import scalerlearningapi.productapi.DTO.*;
+import scalerlearningapi.productapi.Exceptions.NotFoundException;
 import scalerlearningapi.productapi.Models.Product;
 import scalerlearningapi.productapi.Services.ProductServiceBase;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/products")
@@ -34,9 +28,14 @@ public class ProductController {
 
         return productService.getAllProducts();
     }
-
+//    @ExceptionHandler(NotFoundException.class)
+//    ResponseEntity<ErrorResponseDto> handleNotFoundException(Exception exception){
+//        ErrorResponseDto dto = new ErrorResponseDto();
+//        dto.setErrorMessage(exception.getMessage());
+//        return new ResponseEntity<>(dto,HttpStatus.NOT_FOUND);
+//    }
     @GetMapping("/{productId}")
-    public ResponseEntity<Product> getsingleProduct(@PathVariable("productId") Long pid){
+    public ResponseEntity<Product> getsingleProduct(@PathVariable("productId") Long pid) throws NotFoundException{
        // Product product = productService.getsingleProduct(pid);
 //        ResponseEntity<SingleProductRespDto> respDto = new ResponseEntity<SingleProductRespDto>();
 //        respDto.setId(product.getId());
@@ -50,16 +49,19 @@ public class ProductController {
         headers.add("auth-token","Noaccess3994e");
 
 
-
+        Optional<Product> product =  productService.getsingleProduct(pid);
+        if(product.isEmpty()){
+            throw new NotFoundException("Product not found with id: "+ pid);
+        }
         ResponseEntity<Product> respDto = new ResponseEntity<>(
-                                            productService.getsingleProduct(pid),
+                                            product.get(),
                 headers,
                 HttpStatus.OK
         );
         return respDto;
     }
     @PostMapping
-    public ResponseEntity<Product> addNewProduct(@RequestBody AddNewProductReqDto product){
+    public ResponseEntity<Product> addNewProduct(@RequestBody FakeStoreProductRequestDto product){
 //        Product inp = new Product();
 //        inp.setTitle(product.getTitle());
 //        inp.setDescription(product.getDescription());
@@ -75,22 +77,20 @@ public class ProductController {
     }
 
     @PutMapping("/{productid}")
-    public ProductRequestDto updateProduct(@PathVariable("productid") Long pid, @RequestBody ProductRequestDto dto){
-//        Product product = productService.getsingleProduct(pid);
-//        SingleProductRespDto respDto = new SingleProductRespDto();
-//        respDto.setId(product.getId());
-//        respDto.setTitle(product.getTitle());
-//        respDto.setPrice(product.getPrice());
-//        respDto.setCategory(product.getCategory().getName());
-//        respDto.setImageUrl(product.getImageUrl());
-//        respDto.setDescription(product.getDescription());
-//        return respDto;
+    public Product updateProduct(@PathVariable("productid") Long pid, @RequestBody FakeStoreProductRequestDto dto){
         return productService.updateProduct(pid,dto);
     }
 
     @DeleteMapping("/{productId}")
-    public ProductRequestDto deleteProduct(@PathVariable("productId") Long pid){
+    public Product deleteProduct(@PathVariable("productId") Long pid){
 
         return productService.deleteProduct(pid);
     }
+
+    @PatchMapping("/{productid}")
+    public Product ChangeProduct(@PathVariable("productid") Long pid, @RequestBody FakeStoreProductRequestDto dto){
+
+        return productService.changeProduct(pid,dto);
+    }
+
 }

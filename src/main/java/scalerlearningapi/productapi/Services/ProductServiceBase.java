@@ -1,12 +1,11 @@
 package scalerlearningapi.productapi.Services;
 
-import org.springframework.web.bind.annotation.*;
-import scalerlearningapi.productapi.DTO.AddNewProductReqDto;
+import scalerlearningapi.productapi.Clients.fakestore.FakeStoreProductRequestDto;
 import scalerlearningapi.productapi.DTO.ProductRequestDto;
-import scalerlearningapi.productapi.Models.Category;
 import scalerlearningapi.productapi.Models.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductServiceBase {
 
@@ -14,13 +13,14 @@ public interface ProductServiceBase {
     public List<Product> getAllProducts();
 
 
-    public Product getsingleProduct(  Long pid);
+    public Optional<Product> getsingleProduct(Long pid);
 
-    public Product addNewProduct(AddNewProductReqDto product);
+    public Product addNewProduct(FakeStoreProductRequestDto product);
 
 
-    public ProductRequestDto updateProduct( Long productId, ProductRequestDto product);
+    public Product updateProduct( Long productId, FakeStoreProductRequestDto product);
 
-    public ProductRequestDto deleteProduct(Long pid);
+    public Product deleteProduct(Long pid);
+    public Product changeProduct(Long PrId,FakeStoreProductRequestDto dto);
 
 }

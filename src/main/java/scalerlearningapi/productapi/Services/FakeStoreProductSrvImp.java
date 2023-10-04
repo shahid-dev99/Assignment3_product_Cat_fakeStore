@@ -1,38 +1,36 @@
 package scalerlearningapi.productapi.Services;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import scalerlearningapi.productapi.DTO.AddNewProductReqDto;
+import scalerlearningapi.productapi.Clients.fakestore.FakeStoreClient;
+import scalerlearningapi.productapi.Clients.fakestore.FakeStoreProductRequestDto;
 import scalerlearningapi.productapi.DTO.ProductRequestDto;
-import scalerlearningapi.productapi.DTO.RatingDto;
 import scalerlearningapi.productapi.Models.Category;
 import scalerlearningapi.productapi.Models.Product;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FakeStoreProductSrvImp implements ProductServiceBase{
     private RestTemplateBuilder restTemplateBuilder;
+    private FakeStoreClient fakeStoreClient;
 
-    public FakeStoreProductSrvImp(RestTemplateBuilder restTemplateBuilder){
+    public FakeStoreProductSrvImp(RestTemplateBuilder restTemplateBuilder,
+                                  FakeStoreClient fakeStoreClient){
         this.restTemplateBuilder =restTemplateBuilder;
+        this.fakeStoreClient =fakeStoreClient;
     }
-    @Override
-    public List<Product> getAllProducts() {
-    RestTemplate restTemplate = restTemplateBuilder.build();
-    ResponseEntity<ProductRequestDto[]> list = restTemplate.getForEntity("https://fakestoreapi.com/products",
-                                ProductRequestDto[].class);
-
-    List<Product> answer = new ArrayList<>();
-
-    for(ProductRequestDto dto: list.getBody()){
+    private Product convertDtoToProduct2(FakeStoreProductRequestDto dto){
         Product product = new Product();
         product.setId(dto.getId());
         product.setTitle(dto.getTitle());
@@ -43,96 +41,45 @@ public class FakeStoreProductSrvImp implements ProductServiceBase{
         Category category = new Category();
         category.setName(dto.getCategory());
         product.setCategory(category);
-        answer.add(product);
+        return  product;
+
     }
-    return answer;
 
+    @Override
+    public List<Product> getAllProducts() {
 
+    return fakeStoreClient.getAllProducts();
 
 
     }
 
     @Override
-    public Product getsingleProduct(Long pid) {
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        ResponseEntity<ProductRequestDto> response = restTemplate.getForEntity("https://fakestoreapi.com/products/{id}",
-                                                            ProductRequestDto.class,
-        pid);
-
-        ProductRequestDto dto = response.getBody();
-        Product product =new Product();
-        product.setId(dto.getId());
-        product.setTitle(dto.getTitle());
-        product.setPrice(dto.getPrice());
-        product.setImageUrl(dto.getImage());
-        product.setDescription(dto.getDescription());
-
-        Category category = new Category();
-        category.setName(dto.getCategory());
-        product.setCategory(category);
-
-//        RatingDto ratingDto = new RatingDto();
-//        ratingDto.setRate(dto.getRating().getRate());
-//        ratingDto.setCount(dto.getRating().getCount());
-//        product.setRating(ratingDto);
-
-
-        return product;
+    public Optional<Product> getsingleProduct(Long pid) {
+        return fakeStoreClient.getsingleProduct(pid);
     }
 
     @Override
-    public Product addNewProduct(AddNewProductReqDto productIn) {
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        ResponseEntity<ProductRequestDto> response = restTemplate.postForEntity(
-                                    "https://fakestoreapi.com/products",
-                                        productIn,
-                                        ProductRequestDto.class);
-
-        ProductRequestDto dto = response.getBody();
-        Product product =new Product();
-        product.setId(dto.getId());
-        product.setTitle(dto.getTitle());
-        product.setPrice(dto.getPrice());
-        product.setImageUrl(dto.getImage());
-        product.setDescription(dto.getDescription());
-
-        Category category = new Category();
-        category.setName(dto.getCategory());
-        product.setCategory(category);
-
-//        RatingDto ratingDto = new RatingDto();
-//        ratingDto.setRate(dto.getRating().getRate());
-//        ratingDto.setCount(dto.getRating().getCount());
-//        product.setRating(ratingDto);
-
-
-        return product;
+    public Product addNewProduct(FakeStoreProductRequestDto productIn) {
+       FakeStoreProductRequestDto dto = fakeStoreClient.addNewProduct(productIn);
+       return convertDtoToProduct2(dto);
     }
 
     @Override
-    public ProductRequestDto updateProduct(Long pid,ProductRequestDto product) {
-        RestTemplate restTemplate = restTemplateBuilder.build();
-//        RequestCallback requestCallback = restTemplate.acceptHeaderRequestCallback(ProductRequestDto.class);
-        RequestCallback requestCallback = restTemplate.httpEntityCallback(product);
-
-        ResponseExtractor<ResponseEntity<ProductRequestDto>> responseExtractor =
-                restTemplate.responseEntityExtractor(ProductRequestDto.class);
-
-        ResponseEntity<ProductRequestDto> response = restTemplate.execute("https://fakestoreapi.com/products/{id}", HttpMethod.PUT,
-                requestCallback, responseExtractor, pid);
-
-        return response.getBody();
+    public Product updateProduct(Long pid,FakeStoreProductRequestDto product) {
+        return convertDtoToProduct2(fakeStoreClient.updateProduct(pid,product));
     }
 
     @Override
-    public ProductRequestDto deleteProduct(Long pid) {
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        RequestCallback requestCallback = restTemplate.acceptHeaderRequestCallback(ProductRequestDto.class);
-        ResponseExtractor<ResponseEntity<ProductRequestDto>> responseExtractor =
-                restTemplate.responseEntityExtractor(ProductRequestDto.class);
-        ResponseEntity<ProductRequestDto> response = restTemplate.execute("https://fakestoreapi.com/products/{id}", HttpMethod.DELETE,
-                requestCallback, responseExtractor, pid);
-
-        return response.getBody();
+    public Product deleteProduct(Long pid) {
+       return convertDtoToProduct2(fakeStoreClient.deleteProduct(pid));
     }
+
+    @Override
+    public Product changeProduct(Long PrId, FakeStoreProductRequestDto dto) {
+
+
+        return convertDtoToProduct2(fakeStoreClient.changeProduct(PrId,dto));
+
+    }
+
 }

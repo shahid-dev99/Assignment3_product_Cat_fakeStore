@@ -1,17 +1,19 @@
-package scalerlearningapi.productapi.DTO;
+package scalerlearningapi.productapi.Clients.fakestore;
 
-import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
-public class AddNewProductReqDto {
-    @Nullable
+@ToString
+public class FakeStoreProductRequestDto {
     private Long id;
     private String title;
     private Double price;
     private String description;
     private String image;
     private String category;
+
+//    private RatingDto rating ;
 }
