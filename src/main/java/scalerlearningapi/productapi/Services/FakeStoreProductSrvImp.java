@@ -15,6 +15,7 @@ import scalerlearningapi.productapi.Clients.fakestore.FakeStoreProductRequestDto
 import scalerlearningapi.productapi.DTO.ProductRequestDto;
 import scalerlearningapi.productapi.Models.Category;
 import scalerlearningapi.productapi.Models.Product;
+import scalerlearningapi.productapi.Repository.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +25,14 @@ import java.util.Optional;
 public class FakeStoreProductSrvImp implements ProductServiceBase{
     private RestTemplateBuilder restTemplateBuilder;
     private FakeStoreClient fakeStoreClient;
+    private ProductRepository productRepository;
 
     public FakeStoreProductSrvImp(RestTemplateBuilder restTemplateBuilder,
-                                  FakeStoreClient fakeStoreClient){
+                                  FakeStoreClient fakeStoreClient,
+                                  ProductRepository productRep){
         this.restTemplateBuilder =restTemplateBuilder;
         this.fakeStoreClient =fakeStoreClient;
+        this.productRepository = productRep;
     }
     private Product convertDtoToProduct2(FakeStoreProductRequestDto dto){
         Product product = new Product();
@@ -61,7 +65,13 @@ public class FakeStoreProductSrvImp implements ProductServiceBase{
     @Override
     public Product addNewProduct(FakeStoreProductRequestDto productIn) {
        FakeStoreProductRequestDto dto = fakeStoreClient.addNewProduct(productIn);
-       return convertDtoToProduct2(dto);
+      Product product =  new Product();
+      product.setTitle(dto.getTitle());
+      product.setDescription(dto.getDescription());
+
+      Product newProduct = productRepository.save(product);
+//       return convertDtoToProduct2(dto);
+       return newProduct;
     }
 
     @Override
