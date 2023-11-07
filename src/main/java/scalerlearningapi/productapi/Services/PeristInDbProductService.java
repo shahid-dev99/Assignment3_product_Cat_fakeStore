@@ -1,6 +1,8 @@
 package scalerlearningapi.productapi.Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import scalerlearningapi.productapi.Clients.fakestore.FakeStoreProductRequestDto;
 import scalerlearningapi.productapi.Models.Product;
@@ -9,6 +11,7 @@ import scalerlearningapi.productapi.Repository.ProductRepository;
 import java.util.List;
 import java.util.Optional;
 @Service
+@Primary
 public class PeristInDbProductService implements ProductServiceBase {
     private ProductRepository productRepository;
     @Autowired
@@ -40,6 +43,7 @@ public class PeristInDbProductService implements ProductServiceBase {
     public Product updateProduct(Long productId, FakeStoreProductRequestDto product) {
         Product product1 = new Product();
         // set attributes of product from product DTO
+        product1.setId(productId);
         product1.setDescription(product.getDescription());
         product1.setTitle(product.getTitle());
         product1.setPrice(product.getPrice());
@@ -60,10 +64,18 @@ public class PeristInDbProductService implements ProductServiceBase {
     public Product changeProduct(Long PrId, FakeStoreProductRequestDto dto) {
         Product product1 = new Product();
         // set attributes of product from product DTO
+        product1.setId(PrId);
         product1.setDescription(dto.getDescription());
         product1.setTitle(dto.getTitle());
         product1.setPrice(dto.getPrice());
         // product1.setCategory(product.getCategory());
         return productRepository.save(product1);
     }
+
+    @Override
+    public List<Product> getProductsByCategoryId(Long id) {
+        return productRepository.findBycategory_id(id);
+    }
+
+
 }

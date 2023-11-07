@@ -92,4 +92,10 @@ public class FakeStoreProductSrvImp implements ProductServiceBase{
 
     }
 
+    @Override
+    public List<Product> getProductsByCategoryId(Long id) {
+        return null;
+    }
+
+
 }

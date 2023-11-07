@@ -22,5 +22,6 @@ public interface ProductServiceBase {
 
     public Product deleteProduct(Long pid);
     public Product changeProduct(Long PrId,FakeStoreProductRequestDto dto);
+    public List<Product> getProductsByCategoryId(Long id);
 
 }
