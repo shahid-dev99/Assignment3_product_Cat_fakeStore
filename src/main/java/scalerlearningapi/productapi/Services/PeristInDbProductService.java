@@ -11,7 +11,7 @@ import scalerlearningapi.productapi.Repository.ProductRepository;
 import java.util.List;
 import java.util.Optional;
 @Service
-@Primary
+//@Primary
 public class PeristInDbProductService implements ProductServiceBase {
     private ProductRepository productRepository;
     @Autowired

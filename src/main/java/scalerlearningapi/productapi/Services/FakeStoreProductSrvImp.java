@@ -1,6 +1,7 @@
 package scalerlearningapi.productapi.Services;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Primary
 public class FakeStoreProductSrvImp implements ProductServiceBase{
     private RestTemplateBuilder restTemplateBuilder;
     private FakeStoreClient fakeStoreClient;
