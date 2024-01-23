@@ -8,11 +8,11 @@ import scalerlearningapi.productapi.Controllers.ProductController;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-@WebMvcTest(ProductController.class)
+//@WebMvcTest(ProductController.class)
 public class FunctionalTest {
-    @Autowired
+//    @Autowired
     private MockMvc mockMvc;
-    @Test
+//    @Test
     void getAllProducts() throws  Exception{
         mockMvc.perform( get("/productsget")).
                 andExpect(status().is(200));

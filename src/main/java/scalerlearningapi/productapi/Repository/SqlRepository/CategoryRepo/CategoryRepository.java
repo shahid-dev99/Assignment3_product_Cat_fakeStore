@@ -1,4 +1,4 @@
-package scalerlearningapi.productapi.Repository;
+package scalerlearningapi.productapi.Repository.SqlRepository.CategoryRepo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import scalerlearningapi.productapi.Models.Category;

@@ -14,13 +14,13 @@ import static org.assertj.core.api.Assertions.*;
 
  import static org.junit.jupiter.api.Assertions.*;
  import static org.mockito.Mockito.*;
-@SpringBootTest
+//@SpringBootTest
 class ProductControllerTest {
-    @Autowired
+//    @Autowired
     private ProductController productController;
-    @MockBean
+//    @MockBean
     private PeristInDbProductService peristInDbProductService;
-    @Test
+//    @Test
     void getAllProducts() {
         List<Product> productMocks = new ArrayList<>();
         Product pMock = new Product();

@@ -15,15 +15,16 @@ import scalerlearningapi.productapi.Models.Category;
 import scalerlearningapi.productapi.Models.Product;
 
 import javax.print.DocFlavor;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class FakeStoreClient {
-    private RestTemplateBuilder restTemplateBuilder;
-    public FakeStoreClient(RestTemplateBuilder restTemplateBuilder){
-        this.restTemplateBuilder = restTemplateBuilder;
+//    private RestTemplateBuilder restTemplateBuilder;
+    private RestTemplate restTemplate;
+    private Map<Long,Object> productsMap = new HashMap<>();
+    public FakeStoreClient(RestTemplate restTemplate){
+
+        this.restTemplate = restTemplate;
     }
 
     private Product convertDtoToProduct(FakeStoreProductRequestDto dto){
@@ -42,7 +43,7 @@ public class FakeStoreClient {
     }
 
     public List<Product> getAllProducts(){
-        RestTemplate restTemplate = restTemplateBuilder.build();
+//        RestTemplate restTemplate = restTemplateBuilder.build();
         ResponseEntity<FakeStoreProductRequestDto[]> list = restTemplate.getForEntity("https://fakestoreapi.com/products",
                 FakeStoreProductRequestDto[].class);
 
@@ -57,22 +58,27 @@ public class FakeStoreClient {
 
 
     public Optional<Product> getsingleProduct(Long pid){
+        if(productsMap.containsKey(pid)){
+            Product producttemp = (Product)productsMap.get(pid);
+            return Optional.of(producttemp);
+        }else {
+//            RestTemplate restTemplate = restTemplateBuilder.build();
+            ResponseEntity<FakeStoreProductRequestDto> response = restTemplate.getForEntity("https://fakestoreapi.com/products/{id}",
+                    FakeStoreProductRequestDto.class,
+                    pid);
 
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductRequestDto> response = restTemplate.getForEntity("https://fakestoreapi.com/products/{id}",
-                FakeStoreProductRequestDto.class,
-                pid);
+            FakeStoreProductRequestDto dto = response.getBody();
+            if (dto == null) {
+                return Optional.empty();
+            }
+            productsMap.put(Optional.of(convertDtoToProduct(dto)).get().getId(), Optional.of(convertDtoToProduct(dto)).get());
 
-        FakeStoreProductRequestDto dto = response.getBody();
-        if(dto == null){
-            return Optional.empty();
+            return Optional.of(convertDtoToProduct(dto));
         }
-
-        return Optional.of(convertDtoToProduct(dto));
     }
 
     public FakeStoreProductRequestDto addNewProduct(FakeStoreProductRequestDto product){
-        RestTemplate restTemplate = restTemplateBuilder.build();
+//        RestTemplate restTemplate = restTemplateBuilder.build();
         ResponseEntity<FakeStoreProductRequestDto> response = restTemplate.postForEntity(
                 "https://fakestoreapi.com/products",
                 product,
@@ -84,7 +90,7 @@ public class FakeStoreClient {
 
 
     public FakeStoreProductRequestDto  updateProduct(Long productId, FakeStoreProductRequestDto product){
-        RestTemplate restTemplate = restTemplateBuilder.build();
+//        RestTemplate restTemplate = restTemplateBuilder.build();
 //        RequestCallback requestCallback = restTemplate.acceptHeaderRequestCallback(ProductRequestDto.class);
         RequestCallback requestCallback = restTemplate.httpEntityCallback(product);
 
@@ -98,7 +104,7 @@ public class FakeStoreClient {
     }
 
     public FakeStoreProductRequestDto  deleteProduct(Long pid){
-        RestTemplate restTemplate = restTemplateBuilder.build();
+//        RestTemplate restTemplate = restTemplateBuilder.build();
         RequestCallback requestCallback = restTemplate.acceptHeaderRequestCallback(FakeStoreProductRequestDto.class);
         ResponseExtractor<ResponseEntity<FakeStoreProductRequestDto>> responseExtractor =
                 restTemplate.responseEntityExtractor(FakeStoreProductRequestDto.class);
@@ -124,7 +130,7 @@ public class FakeStoreClient {
     //Category relation service calls
 
     public String[] getAllCategory(){
-        RestTemplate restTemplate = restTemplateBuilder.build();
+//        RestTemplate restTemplate = restTemplateBuilder.build();
         ResponseEntity<String[]> response = restTemplate.getForEntity("https://fakestoreapi.com/products/categories",
                 String[].class)  ;
         return response.getBody();
@@ -132,7 +138,7 @@ public class FakeStoreClient {
 
 
     public ProductRequestDto[] getProductsInCategory(String cid){
-        RestTemplate restTemplate = restTemplateBuilder.build();
+//        RestTemplate restTemplate = restTemplateBuilder.build();
         ResponseEntity<ProductRequestDto[]> response = restTemplate.getForEntity(
                 "https://fakestoreapi.com/products/category/{jcat}",
                 ProductRequestDto[].class,cid);
@@ -141,9 +147,9 @@ public class FakeStoreClient {
 
     private <T> ResponseEntity<T> RequestForEntity(HttpMethod httpMethod, String url, @Nullable Object request,
                                                    Class<T> responseType, Object... uriVariables) throws RestClientException {
-        RestTemplate restTemplate = restTemplateBuilder.requestFactory(
-                HttpComponentsClientHttpRequestFactory.class
-        ).build();
+//        RestTemplate restTemplate = restTemplateBuilder.requestFactory(
+//                HttpComponentsClientHttpRequestFactory.class
+//        ).build();
 
         RequestCallback requestCallback =restTemplate.httpEntityCallback(request, responseType);
         ResponseExtractor<ResponseEntity<T>> responseExtractor = restTemplate.responseEntityExtractor(responseType);

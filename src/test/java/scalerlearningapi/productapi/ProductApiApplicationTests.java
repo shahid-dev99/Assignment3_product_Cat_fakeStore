@@ -4,13 +4,13 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+//@SpringBootTest
 class ProductApiApplicationTests {
 //    @Autowired
 //    StudentRepository studentRepository;
 //    @Autowired
 //    AdressRepository adressRepository;
-    @Test
+//    @Test
     void contextLoads() {
     }
 

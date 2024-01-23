@@ -1,6 +1,8 @@
-package scalerlearningapi.productapi.Repository;
+package scalerlearningapi.productapi.Repository.SqlRepository.productRepo;
 
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.FluentQuery;
@@ -27,6 +29,7 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 //    @Query("select p from Product p where category_id = :id")
 //   public findByCategory_id(Long id);
     public List<Product>findBycategory_id(Long id);
+    public Page<Product> findAll(Pageable pageable);
 
 
 }

@@ -1,11 +1,13 @@
 package scalerlearningapi.productapi.Controllers;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import scalerlearningapi.productapi.Clients.fakestore.FakeStoreProductRequestDto;
 import scalerlearningapi.productapi.DTO.*;
 import scalerlearningapi.productapi.Exceptions.NotFoundException;
@@ -22,16 +24,32 @@ public class ProductController {
     //dependency injection
 //    private ProductServiceBase productService;
     private PeristInDbProductService peristInDbProductService;
+    private RestTemplate restTemplate;
 
     public ProductController(
-                             PeristInDbProductService peristInDbProductService){
+                             PeristInDbProductService peristInDbProductService,
+                             RestTemplate restTemplate){
 //        this.productService = productSrv;
         this.peristInDbProductService =  peristInDbProductService;
+        this.restTemplate = restTemplate;
+    }
+    //Pagination
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<Product>> getProducts(@RequestBody GetProductPagReqstDto dto){
+    return ResponseEntity.of(Optional.ofNullable(peristInDbProductService.getProductsPage(dto.getNoOfRecords(),
+            dto.getOffset())));
     }
     @GetMapping("/category/{cat_id}")
     public List<Product> getProductCategory_id(@PathVariable("cat_id") Long id){
         return peristInDbProductService.getProductsByCategoryId(id);
     }
+
+    @GetMapping("/getuserDummy")
+    public ResponseEntity<String> getdumyUser(){
+       ResponseEntity<String> output = restTemplate.getForEntity("http://authorisationService/getuserdummy", String.class);
+       return output;
+    }
+
 
     @GetMapping
     public List<Product> getAllProducts(){

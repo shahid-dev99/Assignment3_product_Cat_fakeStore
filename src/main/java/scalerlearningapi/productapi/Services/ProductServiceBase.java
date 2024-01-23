@@ -1,5 +1,6 @@
 package scalerlearningapi.productapi.Services;
 
+import org.springframework.data.domain.Page;
 import scalerlearningapi.productapi.Clients.fakestore.FakeStoreProductRequestDto;
 import scalerlearningapi.productapi.DTO.ProductRequestDto;
 import scalerlearningapi.productapi.Models.Product;
@@ -23,5 +24,6 @@ public interface ProductServiceBase {
     public Product deleteProduct(Long pid);
     public Product changeProduct(Long PrId,FakeStoreProductRequestDto dto);
     public List<Product> getProductsByCategoryId(Long id);
+    public Page<Product> getProductsPage(int noOfProducts, int offset);
 
 }

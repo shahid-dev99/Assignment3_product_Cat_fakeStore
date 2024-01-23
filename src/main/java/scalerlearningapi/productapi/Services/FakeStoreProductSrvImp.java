@@ -1,29 +1,19 @@
 package scalerlearningapi.productapi.Services;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Primary;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.lang.Nullable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RequestCallback;
-import org.springframework.web.client.ResponseExtractor;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import scalerlearningapi.productapi.Clients.fakestore.FakeStoreClient;
 import scalerlearningapi.productapi.Clients.fakestore.FakeStoreProductRequestDto;
-import scalerlearningapi.productapi.DTO.ProductRequestDto;
 import scalerlearningapi.productapi.Models.Category;
 import scalerlearningapi.productapi.Models.Product;
-import scalerlearningapi.productapi.Repository.ProductRepository;
+import scalerlearningapi.productapi.Repository.SqlRepository.productRepo.ProductRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Primary
+//@Primary
 public class FakeStoreProductSrvImp implements ProductServiceBase{
     private RestTemplateBuilder restTemplateBuilder;
     private FakeStoreClient fakeStoreClient;
@@ -61,6 +51,7 @@ public class FakeStoreProductSrvImp implements ProductServiceBase{
 
     @Override
     public Optional<Product> getsingleProduct(Long pid) {
+
         return fakeStoreClient.getsingleProduct(pid);
     }
 
@@ -96,6 +87,11 @@ public class FakeStoreProductSrvImp implements ProductServiceBase{
 
     @Override
     public List<Product> getProductsByCategoryId(Long id) {
+        return null;
+    }
+
+    @Override
+    public Page<Product> getProductsPage(int noOfProducts, int offset) {
         return null;
     }
 

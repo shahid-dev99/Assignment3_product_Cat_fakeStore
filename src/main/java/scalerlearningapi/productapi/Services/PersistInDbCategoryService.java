@@ -2,16 +2,12 @@ package scalerlearningapi.productapi.Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import scalerlearningapi.productapi.Clients.fakestore.FakeStoreProductRequestDto;
 import scalerlearningapi.productapi.DTO.ProductRequestDto;
 import scalerlearningapi.productapi.Models.Category;
-import scalerlearningapi.productapi.Models.Product;
-import scalerlearningapi.productapi.Repository.CategoryRepository;
+import scalerlearningapi.productapi.Repository.SqlRepository.CategoryRepo.CategoryRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Primary
